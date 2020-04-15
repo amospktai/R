@@ -1,0 +1,14 @@
+#!/bin/csh -f
+cat >! temp.R <<EOF
+rm(list=ls())
+DIR = './'
+source(paste(DIR, 'get_EPA.R', sep=''))
+source(paste(DIR, 'get_geo.R', sep=''))
+source(paste(DIR, 'get_met.R', sep=''))
+source(paste(DIR, 'get_stat.R', sep=''))
+source(paste(DIR, 'geophys_const.R', sep=''))
+save.image('functions.RData')
+print('functions.RData is refreshed.', quote=FALSE)
+EOF
+R --slave -f temp.R
+rm temp.R
