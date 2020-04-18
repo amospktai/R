@@ -1,7 +1,7 @@
 # This file contains useful functions for general numerical and statistical analysis.
 # Last update: Dec 2016, Amos P. K. Tai (amostai@cuhk.edu.hk)
 
-
+################################################################################
 
 # Area under curve:
 trapz = function(x, y) {
@@ -11,7 +11,7 @@ trapz = function(x, y) {
   	return(A)
 }
 
-
+################################################################################
 
 # Roots of quadratic equation:
 quadroot = function(a, b, c) {
@@ -28,7 +28,7 @@ quadroot = function(a, b, c) {
 	return(c(x1, x2))
 }
 		
-
+################################################################################
 
 # Cross product of two vectors:
 vec.cross = function(a, b) {
@@ -40,7 +40,7 @@ vec.cross = function(a, b) {
 	return(n)
 }
 
-
+################################################################################
 
 # Calculating centered values for a multidimensional array:
 c.val = function(X) {
@@ -55,18 +55,17 @@ c.val = function(X) {
 	return(X.c)
 	}			
 
-
+################################################################################
 
 # Calculating the corresponding threshold R-value for a given p-value:
 find.Rlim = function(pval, n) {
 	# "pval" is the desired p-value; "n" is the sample size.
-	t0 = qt(p=(1-pval/2), df=(n-1))	# The corresponding t-statistics
-	R = sqrt(t0^2/(n-2+t0^2))
-	# R is the corresponding R-value (correlation coefficient).
+	t0 = qt(p=(1 - pval/2), df=(n - 1))  # The corresponding t-statistics
+	R = sqrt(t0^2/(n - 2 + t0^2))        # The corresponding R-value (correlation coefficient).
 	return(R)
-	}
+}
 
-
+################################################################################
 
 # Test for multicollinearity using Variance Inflation Factor:
 find.VIF = function(X) {
@@ -81,7 +80,7 @@ find.VIF = function(X) {
 	return(VIF)
 }
 
-
+################################################################################
 
 # Multiple linear regression:
 ml.reg = function(X, Y, plim=0.05, normalized=FALSE) {
@@ -127,7 +126,7 @@ ml.reg = function(X, Y, plim=0.05, normalized=FALSE) {
 	return(cbind(reg.coef, se, pval))
 }
 
-
+################################################################################
 
 # Orthogonal regression:
 ortho.reg = function(X, Y, alpha=0.05) {
@@ -150,7 +149,7 @@ ortho.reg = function(X, Y, alpha=0.05) {
 	return(c(b0, b1, ci, R^2))
 }
 
-
+################################################################################
 
 # Multiple roots-finding:
 multiroot = function(f, interval, tol=1e-9) {
@@ -178,7 +177,7 @@ multiroot = function(f, interval, tol=1e-9) {
 	return(roots)
 }
 	
-	
+################################################################################
 	
 # Error functions:
 # These are the Gauss error function, complementary error function, and the inverses.
@@ -190,7 +189,7 @@ erfc = function(x) 2*pnorm(x*sqrt(2), lower=FALSE)
 erfinv = function(x) qnorm((1 + x)/2)/sqrt(2)
 erfcinv = function(x) qnorm(x/2, lower=FALSE)/sqrt(2)
 
-
+################################################################################
 
 # Dicrete Fourier Series:
 discrete.fourier = function(y, t) {
@@ -229,7 +228,7 @@ discrete.fourier = function(y, t) {
 	return(OUTPUT)
 }
 
-
+################################################################################
 
 # Quantile of probability function y = f(x):
 quantile.fx = function(x, y, p) {
@@ -240,7 +239,7 @@ quantile.fx = function(x, y, p) {
 	return(quant.x)
 }
 
-
+################################################################################
 
 # Mode of probability function y = f(x):
 mode.fx = function(x, y) {
@@ -277,7 +276,7 @@ mode.fx = function(x, y) {
 	return(a)
 }
 
-
+################################################################################
 
 # Find cumulative probability for where a specific value lies in a given sample distribution:
 quantile.inv = function(x, x.spec) {
@@ -313,7 +312,7 @@ quantile.inv = function(x, x.spec) {
 	return(c)
 }
 			
-
+################################################################################
 
 # Trim data outside a specified quantile range:
 trim.quant = function(X, quant=0.95, two.sided=TRUE) {
@@ -331,7 +330,7 @@ trim.quant = function(X, quant=0.95, two.sided=TRUE) {
    return(sub.data)
 }
 
-
+################################################################################
 
 # Specify plot region:
 # This function overrides default plot parameter.
@@ -346,7 +345,7 @@ X11.par = function(title='', width=5.5, height=4, mfrow=c(1,1), mai=c(0.5,0.5,0.
 	par(mfrow=mfrow, mai=mai, mgp=mgp, tcl=tcl, ps=ps)
 }
 
-
+################################################################################
 
 # Standard major-axis regression:
 sma.reg = function(X, Y, alpha=0.05) {
@@ -376,7 +375,7 @@ sma.reg = function(X, Y, alpha=0.05) {
 	return(out)
 }
 		
-
+################################################################################
 
 # Model biases and errors:
 model.bias.error = function(obs, mod) {
@@ -396,7 +395,57 @@ model.bias.error = function(obs, mod) {
 	return(out)
 }
 
+################################################################################
 
+# Scatterplot of two variables with statistics:
+
+plot.reg = function(x, y, x.quant=1, y.quant=1, two.sided=TRUE, top.left=TRUE, digits=3, xlab='x', ylab='y', mai=c(0.4, 0.4, 0.2, 0.2), mgp=c(1.5, 0.5, 0), tcl=-0.25, ps=14, cex=1.1) {
+   # This function plots a scatterplot of two variables, x and y, also displaying their correlation coefficient and regression results.
+   # It has the functionality to trim the data first according to a specified interquantile range to remain, using the function "trim.quant()".
+   # "x.quant" and "y.quant" specify the quantile range of x and y to remain, outside of which the data will be trimmed. See "trim.quant()" for the details.
+   # If "topleft=TRUE", the statistics will be printed on the top left corner of the scatterplot. Otherwise, they will be on the bottom left corner.
+   
+   # Trimming data:
+   if (x.quant < 1)  x = trim.quant(x, quant=x.quant, two.sided=two.sided)
+   if (y.quant < 1)  y = trim.quant(y, quant=y.quant, two.sided=two.sided)
+   
+   par(mai=mai, mgp=mgp, tcl=tcl, ps=ps)
+   
+   x = as.vector(x)
+   y = as.vector(y)
+   plot(x, y, pch=21, xlab=xlab, ylab=ylab)
+   cor.xy = cor(x, y, use="complete.obs")
+   reg = lm(y ~ x)
+   abline(reg, col="blue", lty=2)
+   b0 = summary(reg)$coefficients[1,1]
+   b1 = summary(reg)$coefficients[2,1]
+   pval = summary(reg)$coefficients[2,4]
+   
+   xlim = range(x, na.rm=TRUE)
+   ylim = range(y, na.rm=TRUE)
+   xpos = xlim[1] + 0.010*diff(xlim)
+   if (top.left) {
+      ypos1 = ylim[1] + 0.980*diff(ylim)
+      ypos2 = ylim[1] + 0.890*diff(ylim)
+      ypos3 = ylim[1] + 0.800*diff(ylim)
+   } else {
+      ypos1 = ylim[1] + 0.230*diff(ylim)
+      ypos2 = ylim[1] + 0.140*diff(ylim)
+      ypos3 = ylim[1] + 0.050*diff(ylim)
+   }
+   text(x=xpos, y=ypos1, labels=paste('r  = ', as.character(signif(cor.xy, digits=digits)), sep=''), cex=cex, col='blue', adj=c(0,1))
+   text(x=xpos, y=ypos2, labels=paste('y = ', as.character(signif(b0, digits=digits)), ' + ', as.character(signif(b1, digits=digits)), ' x', sep=''), cex=cex, col='blue', adj=c(0,1))
+   if (pval < 1e-99) {
+      text(x=xpos, y=ypos3, labels=paste('p < ', as.character(1e-99), sep=''), cex=cex, col='blue', adj=c(0,1))
+   } else {
+      text(x=xpos, y=ypos3, labels=paste('p = ', as.character(signif(pval, digits=digits)), sep=''), cex=cex, col='blue', adj=c(0,1))
+   }
+   
+   return(reg)
+   
+}
+
+################################################################################
 
 # Principal component analysis:
 find.PC = function(X, ij=NULL, normalized=TRUE, date.vec=NULL, var.name=NULL) {
@@ -431,7 +480,7 @@ find.PC = function(X, ij=NULL, normalized=TRUE, date.vec=NULL, var.name=NULL) {
    return(OUTPUT)
 }
 
-
+################################################################################
 
 # Multiple linear regression with forward selection:
 mlr.forward = function(y, X, dR2.lim=0.05, VIF.lim=5) {
@@ -469,4 +518,4 @@ mlr.forward = function(y, X, dR2.lim=0.05, VIF.lim=5) {
    return(K_inc)
 }
 
-
+################################################################################

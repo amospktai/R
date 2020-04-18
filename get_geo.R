@@ -449,8 +449,8 @@ moran.I = function(spdata) {
 # Calculating the corresponding threshold R-value for a given p-value:
 find.Rlim = function(pval, n) {
 	# "pval" is the desired p-value; "n" is the sample size.
-	t0 = qt(p=(1-pval/2), df=(n-1))	# The corresponding t-statistics
-	R = sqrt(t0^2/(n-2+t0^2))			# The corresponding R-value (correlation coefficient)
+	t0 = qt(p=(1 - pval/2), df=(n - 1))	# The corresponding t-statistics
+	R = sqrt(t0^2/(n - 2 + t0^2))			# The corresponding R-value (correlation coefficient)
 	return(R)
 }
 
