@@ -1,5 +1,5 @@
 # This file contains useful functions for general numerical and statistical analysis.
-# Last update: Dec 2016, Amos P. K. Tai (amostai@cuhk.edu.hk)
+# Last update: April 2020, Amos P. K. Tai (amostai@cuhk.edu.hk)
 
 ################################################################################
 
